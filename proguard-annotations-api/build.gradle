@@ -1,7 +1,43 @@
 apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
 dependencies {
+}
+
+String bintrayUser = hasProperty('bintray_user') ? property('bintray_user') : ''
+String bintrayApiKey = hasProperty('bintray_api_key') ? property('bintray_api_key') : ''
+String versionName = hasProperty('version_name') ? property('version_name') : ''
+
+publishing {
+    publications {
+        Bintray(MavenPublication) {
+            from components.java
+            groupId 'com.github.wrdlbrnft'
+            artifactId 'proguard-annotations-api'
+            version versionName
+        }
+    }
+}
+
+bintray {
+    user = bintrayUser
+    key = bintrayApiKey
+    publications = ['Bintray']
+    pkg {
+        repo = 'maven'
+        name = 'ProguardAnnotationsApi'
+        userOrg = bintrayUser
+        licenses = ['Apache-2.0']
+        vcsUrl = 'https://github.com/Wrdlbrnft/ProguardAnnotations'
+        publicDownloadNumbers = true
+        version {
+            name = versionName
+            released = new Date()
+        }
+    }
 }
