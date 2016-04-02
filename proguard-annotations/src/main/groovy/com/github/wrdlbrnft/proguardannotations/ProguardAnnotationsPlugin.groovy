@@ -17,9 +17,11 @@ class ProguardAnnotationsPlugin implements Plugin<Project> {
                     'You need to apply it before applying proguard-annotations', null)
         }
 
+        def rootOutputDir = project.file(new File(project.buildDir, "generated/source/apt"))
         def variants = determineVariants(project)
         project.afterEvaluate {
             project.android[variants].all { variant ->
+                def variantOutputDir = new File(rootOutputDir, variant.dirName)
                 def javaCompile = variant.hasProperty('javaCompiler') ? variant.javaCompiler : variant.javaCompile
                 javaCompile.doLast {
                     println ''
