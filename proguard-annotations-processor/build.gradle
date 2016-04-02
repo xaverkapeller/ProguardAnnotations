@@ -5,5 +5,5 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
-    compile project('proguard-annotations-api')
+    compile project(':proguard-annotations-api')
 }
