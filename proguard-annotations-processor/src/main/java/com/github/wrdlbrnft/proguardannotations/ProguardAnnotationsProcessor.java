@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.RoundEnvironment;
@@ -32,15 +33,13 @@ public class ProguardAnnotationsProcessor extends AbstractProcessor {
 
         try {
             try (final Writer writer = openOutputFile()) {
-                writer.write("-keepattributes InnerClasses, Signature, Annotations\n");
-                for (Element element : elements) {
-                    if (element instanceof TypeElement) {
-                        final TypeElement typeElement = (TypeElement) element;
-                        final KeptElement keptElement = KeptElementImpl.from(typeElement);
-                        final String keepRule = KeepRuleFactory.transformToKeepRule(keptElement);
-                        writer.append(keepRule).append("\n");
-                    }
-                }
+                writer.append(elements.stream()
+                        .filter(TypeElement.class::isInstance)
+                        .map(TypeElement.class::cast)
+                        .map(KeptElementImpl::from)
+                        .map(KeepRuleFactory::transformToKeepRule)
+                        .collect(Collectors.joining("\n"))
+                );
             }
         } catch (IOException e) {
             processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Failed to analyze your code.");
