@@ -9,6 +9,8 @@ import org.gradle.api.ProjectConfigurationException
  */
 class ProguardAnnotationsPlugin implements Plugin<Project> {
 
+    private static final String GENERATED_RULE_FILE_NAME = 'generated-proguard-rules.pro'
+
     @Override
     void apply(Project project) {
         def variants = determineVariants(project)
@@ -17,6 +19,10 @@ class ProguardAnnotationsPlugin implements Plugin<Project> {
         project.afterEvaluate {
             project.android[variants].all { variant ->
                 configureVariant(project, variant)
+            }
+
+            project.android.buildTypes.each {
+                it.proguardFiles new File(project.buildDir, GENERATED_RULE_FILE_NAME)
             }
         }
 
@@ -64,7 +70,7 @@ class ProguardAnnotationsPlugin implements Plugin<Project> {
         def variantOutputDir = new File(rootOutputDir, variant.dirName)
         def javaCompile = variant.hasProperty('javaCompiler') ? variant.javaCompiler : variant.javaCompile
         javaCompile.doLast {
-            final File generatedProguardFile = new File(project.projectDir, 'generated-proguard-rules.pro')
+            def generatedProguardFile = new File(project.buildDir, GENERATED_RULE_FILE_NAME)
             generatedProguardFile.withWriter { out ->
                 out.println '-keepattributes InnerClasses, Signature, Annotations'
                 findProguardFiles(variantOutputDir).each {
