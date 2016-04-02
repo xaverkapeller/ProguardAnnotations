@@ -64,11 +64,14 @@ class ProguardAnnotationsPlugin implements Plugin<Project> {
         def variantOutputDir = new File(rootOutputDir, variant.dirName)
         def javaCompile = variant.hasProperty('javaCompiler') ? variant.javaCompiler : variant.javaCompile
         javaCompile.doLast {
-            final File generatedProguardFile = new File(project.rootDir, 'generated-proguard-rules.pro')
+            final File generatedProguardFile = new File(project.projectDir, 'generated-proguard-rules.pro')
             generatedProguardFile.withWriter { out ->
                 out.println '-keepattributes InnerClasses, Signature, Annotations'
                 findProguardFiles(variantOutputDir).each {
-                    out.println it.text
+                    def trimmedContent = it.text.trim()
+                    if (!trimmedContent.isEmpty()) {
+                        out.println trimmedContent
+                    }
                 }
             }
         }
