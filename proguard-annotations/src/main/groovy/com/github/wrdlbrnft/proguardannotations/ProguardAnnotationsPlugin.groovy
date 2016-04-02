@@ -18,8 +18,8 @@ class ProguardAnnotationsPlugin implements Plugin<Project> {
                 .extendsFrom(project.configurations.compile, project.configurations.provided)
 
         project.dependencies {
-            compile 'com.github.wrdlbrnft:proguard-annotations-api:0.1.0.2'
-            proguardprocessor 'com.github.wrdlbrnft:proguard-annotations-processor:0.1.0.2'
+            compile 'com.github.wrdlbrnft:proguard-annotations-api:0.1.0.3'
+            proguardprocessor 'com.github.wrdlbrnft:proguard-annotations-processor:0.1.0.3'
         }
 
         project.afterEvaluate {
