@@ -13,12 +13,18 @@ String bintrayUser = hasProperty('bintray_user') ? property('bintray_user') : ''
 String bintrayApiKey = hasProperty('bintray_api_key') ? property('bintray_api_key') : ''
 String versionName = hasProperty('version_name') ? property('version_name') : ''
 
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
 publishing {
     publications {
-        Bintray(MavenPublication) {
+        Api(MavenPublication) {
             from components.java
             groupId 'com.github.wrdlbrnft'
             artifactId 'proguard-annotations-api'
+            artifact sourcesJar
             version versionName
         }
     }
@@ -27,7 +33,7 @@ publishing {
 bintray {
     user = bintrayUser
     key = bintrayApiKey
-    publications = ['Bintray']
+    publications = ['Api']
     pkg {
         repo = 'maven'
         name = 'ProguardAnnotationsApi'
