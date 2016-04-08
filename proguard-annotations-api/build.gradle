@@ -20,7 +20,7 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 
 publishing {
     publications {
-        Api(MavenPublication) {
+        Bintray(MavenPublication) {
             from components.java
             groupId 'com.github.wrdlbrnft'
             artifactId 'proguard-annotations-api'
@@ -33,7 +33,7 @@ publishing {
 bintray {
     user = bintrayUser
     key = bintrayApiKey
-    publications = ['Api']
+    publications = ['Bintray']
     pkg {
         repo = 'maven'
         name = 'ProguardAnnotationsApi'

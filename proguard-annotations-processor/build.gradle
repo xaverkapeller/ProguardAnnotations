@@ -22,7 +22,7 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 
 publishing {
     publications {
-        Processor(MavenPublication) {
+        Bintray(MavenPublication) {
             from components.java
             groupId 'com.github.wrdlbrnft'
             artifactId 'proguard-annotations-processor'
@@ -35,7 +35,7 @@ publishing {
 bintray {
     user = bintrayUser
     key = bintrayApiKey
-    publications = ['Processor']
+    publications = ['Bintray']
     pkg {
         repo = 'maven'
         name = 'ProguardAnnotationsProcessor'
