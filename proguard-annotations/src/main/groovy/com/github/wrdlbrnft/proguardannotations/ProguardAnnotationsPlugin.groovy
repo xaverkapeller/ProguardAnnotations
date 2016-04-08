@@ -27,8 +27,8 @@ class ProguardAnnotationsPlugin implements Plugin<Project> {
         }
 
         project.dependencies {
-            provided 'com.github.wrdlbrnft:proguard-annotations-api:0.2.0.1'
-            apt 'com.github.wrdlbrnft:proguard-annotations-processor:0.2.0.1'
+            provided 'com.github.wrdlbrnft:proguard-annotations-api:0.3.0.19'
+            apt 'com.github.wrdlbrnft:proguard-annotations-processor:0.3.0.19'
         }
     }
 
