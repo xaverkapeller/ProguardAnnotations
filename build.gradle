@@ -6,11 +6,18 @@ buildscript {
     }
     dependencies {
         classpath 'me.tatarka:gradle-retrolambda:3.2.5'
-        classpath 'com.novoda:bintray-release:0.3.4'
     }
 }
 
 subprojects {
+    buildscript {
+        repositories {
+            jcenter()
+        }
+        dependencies {
+            classpath 'com.novoda:bintray-release:0.3.4'
+        }
+    }
     repositories {
         jcenter()
     }
