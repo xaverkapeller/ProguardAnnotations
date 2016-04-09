@@ -1,54 +1,28 @@
 package com.github.wrdlbrnft.proguardannotations;
 
+import javax.lang.model.element.*;
+import javax.lang.model.type.TypeMirror;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.Modifier;
-import javax.lang.model.element.PackageElement;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.TypeMirror;
-
 /**
- * Created by kapeller on 08/03/16.
+ * Created by Xaver on 09/04/16.
  */
-public class KeepRuleFactory {
+public class Utils {
 
-    public static String transformToKeepRule(KeptElement element) {
-        final TypeElement typeElement = element.getTypeElement();
-        final Set<KeepSetting> settings = element.getRules().stream()
-                .map(Keep::value)
-                .collect(Collectors.toSet());
-
-        return "-keep " + formatElementModifiers(typeElement) + " " + getNameOfKind(typeElement) + " " + getProguardClassName(typeElement) + " {"
-                + processRules(typeElement, settings)
-                + "}";
+    public static <T> Predicate<T> not(Predicate<T> predicate) {
+        return predicate.negate();
     }
 
-    private static String processRules(TypeElement typeElement, Set<KeepSetting> settings) {
-        if (settings.contains(KeepSetting.ALL)) {
-            return " *; ";
-        }
-
-        final Set<MemberEvaluator> evaluators = settings.stream()
-                .map(MemberEvaluator::of)
-                .collect(Collectors.toSet());
-
-        return typeElement.getEnclosedElements().stream()
-                .filter(element -> element.getEnclosingElement() == typeElement)
-                .filter(element -> element.getKind() == ElementKind.METHOD || element.getKind() == ElementKind.FIELD)
-                .filter(element -> evaluators.stream()
-                        .anyMatch(evaluator -> evaluator.shouldKeep(element)))
-                .map(KeepRuleFactory::transformMemberForKeepRule)
-                .collect(Collectors.joining("\n\t", "\n\t", "\n"));
+    public static String formatType(TypeElement element) {
+        return formatElementModifiers(element)
+                + " " + getNameOfKind(element)
+                + " " + getProguardClassName(element);
     }
 
-    private static String transformMemberForKeepRule(Element member) {
+    public static String formatMember(Element member) {
         return formatMemberModifiers(member) + " " + formatMemberType(member) + " " + formatMemberName(member) + ";";
     }
 
@@ -93,10 +67,6 @@ public class KeepRuleFactory {
                 .map(Modifier::name)
                 .map(String::toLowerCase)
                 .collect(Collectors.joining(" "));
-    }
-
-    private static <T> Predicate<T> not(Predicate<T> predicate) {
-        return predicate.negate();
     }
 
     private static String getProguardClassName(TypeElement element) {

@@ -5,7 +5,6 @@ package com.github.wrdlbrnft.proguardannotations;
  */
 public enum KeepSetting {
     ALL,
-    NAME,
 
     PUBLIC_MEMBERS,
     PROTECTED_MEMBERS,

@@ -1,4 +1,6 @@
-package com.github.wrdlbrnft.proguardannotations;
+package com.github.wrdlbrnft.proguardannotations.analyzer;
+
+import com.github.wrdlbrnft.proguardannotations.KeepSetting;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -7,17 +9,14 @@ import javax.lang.model.element.Modifier;
 /**
  * Created by kapeller on 30/03/16.
  */
-public interface MemberEvaluator {
+interface KeepSettingEvaluator {
     boolean shouldKeep(Element element);
 
-    static MemberEvaluator of(KeepSetting setting) {
+    static KeepSettingEvaluator of(KeepSetting setting) {
         switch (setting) {
 
             case ALL:
                 return element -> true;
-
-            case NAME:
-                return element -> false;
 
             case PUBLIC_MEMBERS:
                 return element -> element.getModifiers().contains(Modifier.PUBLIC);

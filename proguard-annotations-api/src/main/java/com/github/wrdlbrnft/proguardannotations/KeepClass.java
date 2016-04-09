@@ -10,6 +10,6 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.CLASS)
 @Target(ElementType.TYPE)
-public @interface Keep {
-    KeepSetting value() default KeepSetting.ALL;
+public @interface KeepClass {
+    KeepSetting[] value() default KeepSetting.ALL;
 }

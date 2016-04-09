@@ -6,10 +6,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Created by kapeller on 08/03/16.
+ * Created by Xaver on 09/04/16.
  */
-@Retention(RetentionPolicy.SOURCE)
-@Target(ElementType.TYPE)
-public @interface KeepRules {
-    Keep[] value();
+@Retention(RetentionPolicy.CLASS)
+@Target(ElementType.METHOD)
+public @interface KeepMethod {
 }
