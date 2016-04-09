@@ -32,6 +32,11 @@ public class ProguardAnnotationsProcessor extends AbstractProcessor {
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
+        if (round == 0) {
+            processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "# Started generating Proguard rules...");
+        }
+        processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "# Round: " + round);
+
         try {
             try (final Writer writer = openOutputFile()) {
                 writer.append(mKeepRuleAnalyzer.analyze(roundEnv)
@@ -57,6 +62,9 @@ public class ProguardAnnotationsProcessor extends AbstractProcessor {
     public Set<String> getSupportedAnnotationTypes() {
         final Set<String> types = new HashSet<>();
         types.add(KeepClass.class.getCanonicalName());
+        types.add(KeepName.class.getCanonicalName());
+        types.add(KeepField.class.getCanonicalName());
+        types.add(KeepMethod.class.getCanonicalName());
         return types;
     }
 }
