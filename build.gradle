@@ -9,20 +9,6 @@ buildscript {
     }
 }
 
-subprojects {
-    buildscript {
-        repositories {
-            jcenter()
-        }
-        dependencies {
-            classpath 'com.novoda:bintray-release:0.3.4'
-        }
-    }
-    repositories {
-        jcenter()
-    }
-}
-
 task clean(type: Delete) {
     delete rootProject.buildDir
 }

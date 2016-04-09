@@ -1,48 +1,31 @@
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "com.gradle.publish:plugin-publish-plugin:0.9.4"
+    }
+}
+
+apply plugin: "com.gradle.plugin-publish"
 apply plugin: 'groovy'
-apply plugin: 'maven'
-apply plugin: 'maven-publish'
-apply plugin: 'com.jfrog.bintray'
 
 dependencies {
     compile gradleApi()
     compile localGroovy()
 }
 
-String bintrayUser = hasProperty('bintray_user') ? property('bintray_user') : ''
-String bintrayApiKey = hasProperty('bintray_api_key') ? property('bintray_api_key') : ''
-String versionName = hasProperty('version_name') ? property('version_name') : ''
+pluginBundle {
+    vcsUrl = 'https://github.com/Wrdlbrnft/ProguardAnnotations'
+    plugins {
 
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-
-publishing {
-    publications {
-        Bintray(MavenPublication) {
-            from components.java
-            groupId 'com.github.wrdlbrnft'
-            artifactId 'proguard-annotations'
-            artifact sourcesJar
-            version versionName
-        }
-    }
-}
-
-bintray {
-    user = bintrayUser
-    key = bintrayApiKey
-    publications = ['Bintray']
-    pkg {
-        repo = 'maven'
-        name = 'ProguardAnnotationsPlugin'
-        userOrg = bintrayUser
-        licenses = ['Apache-2.0']
-        vcsUrl = 'https://github.com/Wrdlbrnft/ProguardAnnotations'
-        publicDownloadNumbers = true
-        version {
-            name = versionName
-            released = new Date()
+        ProguardAnnotationsPlugin {
+            id = 'proguard-annotations'
+            displayName = 'ProguardAnnotations'
+            tags = ['android', 'proguard', 'plugin']
+            version = version_name
         }
     }
 }
