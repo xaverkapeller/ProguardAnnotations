@@ -13,10 +13,10 @@ class ProguardAnnotationsPlugin implements Plugin<Project> {
 
     @Override
     void apply(Project project) {
-        def variants = determineVariants(project)
-        ensureAptPluginIsApplied(project)
-
         project.afterEvaluate {
+            def variants = determineVariants(project)
+            ensureAptPluginIsApplied(project)
+
             project.android[variants].all { variant ->
                 configureVariant(project, variant)
             }
@@ -24,11 +24,11 @@ class ProguardAnnotationsPlugin implements Plugin<Project> {
             project.android.buildTypes.each {
                 it.proguardFiles new File(project.buildDir, GENERATED_RULE_FILE_NAME)
             }
-        }
 
-        project.dependencies {
-            provided 'com.github.wrdlbrnft:proguard-annotations-api:0.2.0.35'
-            apt 'com.github.wrdlbrnft:proguard-annotations-processor:0.2.0.35'
+            project.dependencies {
+                provided 'com.github.wrdlbrnft:proguard-annotations-api:0.2.0.36'
+                apt 'com.github.wrdlbrnft:proguard-annotations-processor:0.2.0.36'
+            }
         }
     }
 
