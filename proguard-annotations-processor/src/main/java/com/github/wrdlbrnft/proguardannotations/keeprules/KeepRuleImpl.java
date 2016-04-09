@@ -14,14 +14,28 @@ class KeepRuleImpl implements KeepRule {
 
     private final String mProguardRule;
 
-    KeepRuleImpl(TypeElement element, List<IncludeStatement> includeStatement) {
+    KeepRuleImpl(Type type, TypeElement element, List<IncludeStatement> includeStatement) {
         mProguardRule = includeStatement.stream()
                 .map(IncludeStatement::toString)
                 .collect(Collectors.joining(
                         "\n\t",
-                        "-keep " + Utils.formatType(element) + " {\n\t",
+                        getKeepInstructionForType(type) + " " + Utils.formatType(element) + " {\n\t",
                         "\n}"
                 ));
+    }
+
+    private static String getKeepInstructionForType(Type type) {
+        switch (type) {
+
+            case KEEP_ALL:
+                return "-keep";
+
+            case KEEP_MEMBERS:
+                return "-keepclassmembers";
+
+            default:
+                throw new IllegalStateException("Encountered unhandled KeepRule.Type: " + type);
+        }
     }
 
     @Override

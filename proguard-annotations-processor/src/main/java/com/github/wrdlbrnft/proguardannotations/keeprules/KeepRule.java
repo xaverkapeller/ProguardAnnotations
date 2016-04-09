@@ -11,12 +11,19 @@ import java.util.List;
  */
 public interface KeepRule {
 
+    enum Type {
+        KEEP_ALL,
+        KEEP_MEMBERS
+    }
+
     class Builder {
 
+        private final Type mType;
         private final TypeElement mElement;
         private final List<IncludeStatement> mStatements = new ArrayList<>();
 
-        public Builder(TypeElement element) {
+        public Builder(Type type, TypeElement element) {
+            mType = type;
             mElement = element;
         }
 
@@ -26,7 +33,7 @@ public interface KeepRule {
         }
 
         public KeepRule build() {
-            return new KeepRuleImpl(mElement, mStatements);
+            return new KeepRuleImpl(mType, mElement, mStatements);
         }
     }
 }
