@@ -24,7 +24,7 @@ pluginBundle {
     plugins {
 
         ProguardAnnotationsPlugin {
-            id = 'proguard-annotations'
+            id = 'com.github.wrdlbrnft.proguard-annotations'
             displayName = 'ProguardAnnotations'
             tags = ['android', 'proguard', 'plugin']
             version = version_name
