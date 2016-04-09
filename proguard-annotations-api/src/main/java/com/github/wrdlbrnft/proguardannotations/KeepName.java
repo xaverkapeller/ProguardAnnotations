@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 /**
  * Created by Xaver on 09/04/16.
  */
-@Retention(RetentionPolicy.CLASS)
+@Retention(RetentionPolicy.SOURCE)
 @Target(ElementType.TYPE)
 public @interface KeepName {
 }

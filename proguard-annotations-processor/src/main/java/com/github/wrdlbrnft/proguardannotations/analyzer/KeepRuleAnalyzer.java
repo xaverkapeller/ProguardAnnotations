@@ -31,6 +31,7 @@ public class KeepRuleAnalyzer {
                 .collect(Collectors.toList());
 
         final Stream<TypeElement> classesWithKeptMembers = Stream.concat(roundEnv.getElementsAnnotatedWith(KeepField.class).stream(), roundEnv.getElementsAnnotatedWith(KeepMethod.class).stream())
+                .filter(element -> element.getAnnotation(DontKeep.class) == null)
                 .filter(member -> !mHandledClasses.stream()
                         .filter(member.getEnclosingElement()::equals)
                         .findAny().isPresent())
@@ -58,6 +59,7 @@ public class KeepRuleAnalyzer {
 
         return element.getEnclosedElements().stream()
                 .filter(member -> member.getKind() == ElementKind.FIELD || member.getKind() == ElementKind.METHOD)
+                .filter(member -> member.getAnnotation(DontKeep.class) == null)
                 .filter(member -> memberHasKeepAnnotation(member) || settings.stream()
                         .map(KeepSettingEvaluator::of)
                         .anyMatch(evaluator -> evaluator.shouldKeep(member)))

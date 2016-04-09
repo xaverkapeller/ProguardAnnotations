@@ -6,10 +6,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Created by kapeller on 07/03/16.
+ * Created by Xaver on 09/04/16.
  */
 @Retention(RetentionPolicy.SOURCE)
-@Target(ElementType.TYPE)
-public @interface KeepClass {
-    KeepSetting[] value() default KeepSetting.ALL;
+@Target({ElementType.FIELD, ElementType.METHOD})
+public @interface DontKeep {
 }
