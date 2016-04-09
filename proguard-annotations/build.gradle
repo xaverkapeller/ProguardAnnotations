@@ -18,6 +18,8 @@ dependencies {
 }
 
 version = hasProperty('version_name') ? property('version_name') : ''
+gradle.publish.key = hasProperty('gradle_publish_key') ? property('gradle_publish_key') : ''
+gradle.publish.secret = hasProperty('gradle_publish_secret') ? property('gradle_publish_secret') : ''
 
 pluginBundle {
     vcsUrl = 'https://github.com/Wrdlbrnft/ProguardAnnotations'
