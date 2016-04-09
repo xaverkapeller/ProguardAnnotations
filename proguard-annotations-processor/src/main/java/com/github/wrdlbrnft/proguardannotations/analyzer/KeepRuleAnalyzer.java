@@ -53,9 +53,6 @@ public class KeepRuleAnalyzer {
     private KeepRule transformKeptClass(TypeElement element) {
         final KeepClass keepClassAnnotation = element.getAnnotation(KeepClass.class);
         final List<KeepSetting> settings = Arrays.asList(keepClassAnnotation.value());
-        if (settings.contains(KeepSetting.ALL)) {
-            return new KeepAllRule(element);
-        }
 
         return element.getEnclosedElements().stream()
                 .filter(member -> member.getKind() == ElementKind.FIELD || member.getKind() == ElementKind.METHOD)
