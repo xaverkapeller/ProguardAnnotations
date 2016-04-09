@@ -19,6 +19,8 @@ dependencies {
 
 pluginBundle {
     vcsUrl = 'https://github.com/Wrdlbrnft/ProguardAnnotations'
+    website = 'https://github.com/Wrdlbrnft/ProguardAnnotations'
+    description = 'Makes dealing with Proguard simple and easy!'
     plugins {
 
         ProguardAnnotationsPlugin {
