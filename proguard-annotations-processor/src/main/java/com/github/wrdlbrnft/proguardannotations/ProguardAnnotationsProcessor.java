@@ -32,10 +32,9 @@ public class ProguardAnnotationsProcessor extends AbstractProcessor {
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        final List<KeepRule> rules = mKeepRuleAnalyzer.analyze(roundEnv);
         try {
             try (final Writer writer = openOutputFile()) {
-                writer.append(rules.stream()
+                writer.append(mKeepRuleAnalyzer.analyze(roundEnv)
                         .map(KeepRule::toString)
                         .collect(Collectors.joining("\n"))
                 );
