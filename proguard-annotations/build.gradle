@@ -17,6 +17,8 @@ dependencies {
     compile localGroovy()
 }
 
+version = hasProperty('version_name') ? property('version_name') : ''
+
 pluginBundle {
     vcsUrl = 'https://github.com/Wrdlbrnft/ProguardAnnotations'
     website = 'https://github.com/Wrdlbrnft/ProguardAnnotations'
@@ -27,7 +29,6 @@ pluginBundle {
             id = 'com.github.wrdlbrnft.proguard-annotations'
             displayName = 'ProguardAnnotations'
             tags = ['android', 'proguard', 'plugin']
-            version = version_name
         }
     }
 }
