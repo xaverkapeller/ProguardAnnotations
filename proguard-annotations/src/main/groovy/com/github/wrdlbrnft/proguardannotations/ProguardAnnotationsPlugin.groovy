@@ -26,8 +26,8 @@ class ProguardAnnotationsPlugin implements Plugin<Project> {
             }
 
             project.dependencies {
-                provided 'com.github.wrdlbrnft:proguard-annotations-api:0.2.0.37'
-                apt 'com.github.wrdlbrnft:proguard-annotations-processor:0.2.0.37'
+                provided 'com.github.wrdlbrnft:proguard-annotations-api:0.2.0.38'
+                apt 'com.github.wrdlbrnft:proguard-annotations-processor:0.2.0.38'
             }
         }
     }
@@ -44,8 +44,10 @@ class ProguardAnnotationsPlugin implements Plugin<Project> {
 
     private static void ensureAptPluginIsApplied(Project project) {
         if (!project.plugins.findPlugin('com.neenbedankt.android-apt')) {
-            throw new ProjectConfigurationException('Android APT Plugin is required for ProguardAnnotations to work. ' +
-                    'You need to apply it before applying proguard-annotations', null)
+            project.buildscript.dependencies {
+                classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+            }
+            project.apply plugin: 'com.neenbedankt.android-apt'
         }
     }
 
