@@ -9,6 +9,12 @@ buildscript {
     }
 }
 
+subprojects {
+    repositories {
+        jcenter()
+    }
+}
+
 task clean(type: Delete) {
     delete rootProject.buildDir
 }

@@ -6,9 +6,6 @@ buildscript {
         classpath 'com.novoda:bintray-release:0.3.4'
     }
 }
-repositories {
-    jcenter()
-}
 
 apply plugin: 'java'
 apply plugin: 'me.tatarka.retrolambda'

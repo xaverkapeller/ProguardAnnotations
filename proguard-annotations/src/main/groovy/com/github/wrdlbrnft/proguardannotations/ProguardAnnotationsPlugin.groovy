@@ -21,13 +21,13 @@ class ProguardAnnotationsPlugin implements Plugin<Project> {
                 configureVariant(project, variant)
             }
 
-            project.android.buildTypes.each {
-                it.proguardFiles new File(project.buildDir, GENERATED_RULE_FILE_NAME)
+            project.android.buildTypes.each { type ->
+                type.proguardFiles new File(project.buildDir, GENERATED_RULE_FILE_NAME)
             }
 
             project.dependencies {
-                provided 'com.github.wrdlbrnft:proguard-annotations-api:0.2.0.38'
-                apt 'com.github.wrdlbrnft:proguard-annotations-processor:0.2.0.38'
+                provided 'com.github.wrdlbrnft:proguard-annotations-api:0.2.0.39'
+                apt 'com.github.wrdlbrnft:proguard-annotations-processor:0.2.0.39'
             }
         }
     }
@@ -44,27 +44,8 @@ class ProguardAnnotationsPlugin implements Plugin<Project> {
 
     private static void ensureAptPluginIsApplied(Project project) {
         if (!project.plugins.findPlugin('com.neenbedankt.android-apt')) {
-            project.buildscript.dependencies {
-                classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
-            }
-            project.apply plugin: 'com.neenbedankt.android-apt'
+            throw new ProjectConfigurationException('Android APT Plugin is required for ProguardAnnotations to work.', null)
         }
-    }
-
-    private static Set<File> findProguardFiles(File folder) {
-        def proguardFiles = new HashSet();
-        for (File file : folder.listFiles()) {
-            if (file.isDirectory()) {
-                proguardFiles.addAll(findProguardFiles(file))
-                continue
-            }
-
-            def fileName = file.name
-            if (fileName.startsWith('generated_proguard_part_') && fileName.endsWith('.pro')) {
-                proguardFiles.add(file)
-            }
-        }
-        return proguardFiles;
     }
 
     private static void configureVariant(Project project, def variant) {
@@ -83,5 +64,21 @@ class ProguardAnnotationsPlugin implements Plugin<Project> {
                 }
             }
         }
+    }
+
+    private static Set<File> findProguardFiles(File folder) {
+        def proguardFiles = new HashSet();
+        for (File file : folder.listFiles()) {
+            if (file.isDirectory()) {
+                proguardFiles.addAll(findProguardFiles(file))
+                continue
+            }
+
+            def fileName = file.name
+            if (fileName.startsWith('generated_proguard_part_') && fileName.endsWith('.pro')) {
+                proguardFiles.add(file)
+            }
+        }
+        return proguardFiles;
     }
 }
