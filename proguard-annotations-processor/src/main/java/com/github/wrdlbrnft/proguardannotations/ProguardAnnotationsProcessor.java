@@ -6,7 +6,6 @@ import com.github.wrdlbrnft.proguardannotations.analyzer.KeepRuleAnalyzer;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -57,9 +56,8 @@ public class ProguardAnnotationsProcessor extends AbstractProcessor {
     public Set<String> getSupportedAnnotationTypes() {
         final Set<String> types = new HashSet<>();
         types.add(KeepClass.class.getCanonicalName());
-        types.add(KeepName.class.getCanonicalName());
-        types.add(KeepField.class.getCanonicalName());
-        types.add(KeepMethod.class.getCanonicalName());
+        types.add(KeepMember.class.getCanonicalName());
+        types.add(KeepClassMembers.class.getCanonicalName());
         return types;
     }
 }

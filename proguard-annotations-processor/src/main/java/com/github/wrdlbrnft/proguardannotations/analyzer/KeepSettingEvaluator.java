@@ -18,6 +18,42 @@ interface KeepSettingEvaluator {
             case ALL:
                 return element -> true;
 
+            case PUBLIC_CONSTRUCTORS:
+                return element -> element.getModifiers().contains(Modifier.PUBLIC) && element.getKind() == ElementKind.CONSTRUCTOR;
+
+            case PROTECTED_CONSTRUCTORS:
+                return element -> element.getModifiers().contains(Modifier.PROTECTED) && element.getKind() == ElementKind.CONSTRUCTOR;
+
+            case PACKAGE_LOCAL_CONSTRUCTORS:
+                return element -> element.getModifiers().contains(Modifier.DEFAULT) && element.getKind() == ElementKind.CONSTRUCTOR;
+
+            case PRIVATE_CONSTRUCTORS:
+                return element -> element.getModifiers().contains(Modifier.PRIVATE) && element.getKind() == ElementKind.CONSTRUCTOR;
+
+            case PUBLIC_INNER_CLASSES:
+                return element -> element.getModifiers().contains(Modifier.PUBLIC) && (element.getKind() == ElementKind.CLASS
+                        || element.getKind() == ElementKind.INTERFACE
+                        || element.getKind() == ElementKind.ANNOTATION_TYPE
+                        || element.getKind() == ElementKind.ENUM);
+
+            case PROTECTED_INNER_CLASSES:
+                return element -> element.getModifiers().contains(Modifier.PROTECTED) && (element.getKind() == ElementKind.CLASS
+                        || element.getKind() == ElementKind.INTERFACE
+                        || element.getKind() == ElementKind.ANNOTATION_TYPE
+                        || element.getKind() == ElementKind.ENUM);
+
+            case PACKAGE_LOCAL_INNER_CLASSES:
+                return element -> element.getModifiers().contains(Modifier.DEFAULT) && (element.getKind() == ElementKind.CLASS
+                        || element.getKind() == ElementKind.INTERFACE
+                        || element.getKind() == ElementKind.ANNOTATION_TYPE
+                        || element.getKind() == ElementKind.ENUM);
+
+            case PRIVATE_INNER_CLASSES:
+                return element -> element.getModifiers().contains(Modifier.PRIVATE) && (element.getKind() == ElementKind.CLASS
+                        || element.getKind() == ElementKind.INTERFACE
+                        || element.getKind() == ElementKind.ANNOTATION_TYPE
+                        || element.getKind() == ElementKind.ENUM);
+
             case PUBLIC_MEMBERS:
                 return element -> element.getModifiers().contains(Modifier.PUBLIC);
 

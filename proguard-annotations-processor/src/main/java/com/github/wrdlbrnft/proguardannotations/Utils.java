@@ -83,6 +83,26 @@ public class Utils {
     }
 
     private static String getNameOfKind(TypeElement typeElement) {
-        return typeElement.getKind().name().toLowerCase();
+        final ElementKind kind = typeElement.getKind();
+        switch (kind) {
+
+            case PACKAGE:
+                return "package";
+
+            case ENUM:
+                return "enum";
+
+            case CLASS:
+                return "class";
+
+            case ANNOTATION_TYPE:
+                return "@interface";
+
+            case INTERFACE:
+                return "interface";
+
+            default:
+                return kind.name().toLowerCase();
+        }
     }
 }

@@ -9,6 +9,6 @@ import java.lang.annotation.Target;
  * Created by Xaver on 09/04/16.
  */
 @Retention(RetentionPolicy.SOURCE)
-@Target(ElementType.FIELD)
-public @interface KeepField {
+@Target({ElementType.FIELD, ElementType.METHOD, ElementType.CONSTRUCTOR})
+public @interface KeepMember {
 }
