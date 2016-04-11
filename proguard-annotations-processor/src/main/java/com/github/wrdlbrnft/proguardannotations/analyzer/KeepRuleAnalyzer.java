@@ -7,6 +7,7 @@ import com.github.wrdlbrnft.proguardannotations.keeprules.KeepRule;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -55,9 +56,7 @@ public class KeepRuleAnalyzer {
                 ? Arrays.asList(kepClassMembersAnnotation.value())
                 : Collections.emptyList();
 
-        final KeepRule.Type keepRuleType = element.getAnnotation(KeepClass.class) != null
-                ? KeepRule.Type.KEEP_ALL
-                : KeepRule.Type.KEEP_MEMBERS;
+        final KeepRule.Type keepRuleType = determineKeepRuleType(element);
 
         return element.getEnclosedElements().stream()
                 .filter(Utils.not(this::hasDontKeepAnnotation))
@@ -69,6 +68,33 @@ public class KeepRuleAnalyzer {
                     throw new IllegalStateException("Failed to generate keep rules for " + element);
                 })
                 .build();
+    }
+
+    private KeepRule.Type determineKeepRuleType(TypeElement element) {
+        final KeepClass keepClassAnnotation = element.getAnnotation(KeepClass.class);
+        if(keepClassAnnotation != null) {
+            return KeepRule.Type.KEEP_ALL;
+        }
+
+        if(element.getEnclosingElement() instanceof TypeElement) {
+            final TypeElement enclosingType = (TypeElement) element.getEnclosingElement();
+            final KeepClassMembers annotation = enclosingType.getAnnotation(KeepClassMembers.class);
+            final Collection<KeepSetting> settings = Arrays.asList(annotation.value());
+
+            if(settings.contains(KeepSetting.ALL)) {
+                return KeepRule.Type.KEEP_ALL;
+            }
+
+            final Set<Modifier> modifiers = element.getModifiers();
+            if(modifiers.contains(Modifier.PUBLIC) && settings.contains(KeepSetting.PUBLIC_INNER_CLASSES)
+                    || modifiers.contains(Modifier.PROTECTED) && settings.contains(KeepSetting.PROTECTED_INNER_CLASSES)
+                    || modifiers.contains(Modifier.DEFAULT) && settings.contains(KeepSetting.PACKAGE_LOCAL_INNER_CLASSES)
+                    || modifiers.contains(Modifier.PRIVATE) && settings.contains(KeepSetting.PRIVATE_INNER_CLASSES)) {
+                return KeepRule.Type.KEEP_ALL;
+            }
+        }
+
+        return KeepRule.Type.KEEP_MEMBERS;
     }
 
     private Stream<TypeElement> findKeptInnerClasses(TypeElement type) {
