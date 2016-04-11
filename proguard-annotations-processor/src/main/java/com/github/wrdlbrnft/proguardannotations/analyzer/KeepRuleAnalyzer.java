@@ -17,10 +17,11 @@ import java.util.stream.Stream;
  */
 public class KeepRuleAnalyzer {
 
-    private static final KeepSetting[] INNER_CLASS_SETTINGS = new KeepSetting[]{
+    private static final Collection<KeepSetting> INNER_CLASS_SETTINGS = Collections.unmodifiableCollection(Arrays.asList(
+            KeepSetting.ALL,
             KeepSetting.PUBLIC_INNER_CLASSES, KeepSetting.PROTECTED_INNER_CLASSES,
             KeepSetting.PACKAGE_LOCAL_INNER_CLASSES, KeepSetting.PRIVATE_INNER_CLASSES
-    };
+    ));
 
     public Stream<KeepRule> analyze(RoundEnvironment roundEnv) {
         final Stream<TypeElement> keptTypes = roundEnv.getElementsAnnotatedWith(KeepClass.class).stream()
@@ -88,13 +89,10 @@ public class KeepRuleAnalyzer {
     }
 
     private Collection<KeepSettingEvaluator> getEvaluatorsForInnerClasses(Collection<KeepSetting> settings) {
-        final Set<KeepSettingEvaluator> evaluators = new HashSet<>();
-        for (KeepSetting setting : INNER_CLASS_SETTINGS) {
-            if (settings.contains(setting)) {
-                evaluators.add(KeepSettingEvaluator.of(setting));
-            }
-        }
-        return evaluators;
+        return settings.stream()
+                .filter(INNER_CLASS_SETTINGS::contains)
+                .map(KeepSettingEvaluator::of)
+                .collect(Collectors.toSet());
     }
 
     private boolean hasDontKeepAnnotation(Element member) {
