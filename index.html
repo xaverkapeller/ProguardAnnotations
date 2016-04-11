@@ -34,7 +34,7 @@
 <p>To use Proguard Annotations add the following at the very top of your build.gradle file:</p>
 
 <div class="highlight highlight-source-groovy"><pre>plugins {
-    id <span class="pl-s"><span class="pl-pds">"</span>com.github.wrdlbrnft.proguard-annotations<span class="pl-pds">"</span></span> version <span class="pl-s"><span class="pl-pds">"</span>0.2.0.41<span class="pl-pds">"</span></span>
+    id <span class="pl-s"><span class="pl-pds">"</span>com.github.wrdlbrnft.proguard-annotations<span class="pl-pds">"</span></span> version <span class="pl-s"><span class="pl-pds">"</span>0.2.0.44<span class="pl-pds">"</span></span>
 }</pre></div>
 
 <p>And you are done! Now you can use ProguardAnnotations.</p>
@@ -42,17 +42,15 @@
 <h2>
 <a id="how-do-i-use-it" class="anchor" href="#how-do-i-use-it" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>How do I use it?</h2>
 
-<p>ProguardAnnotations currently provides five different annotations with which you can define your Proguard rules:</p>
+<p>ProguardAnnotations currently provides four different annotations with which you can define your Proguard rules:</p>
 
 <ul>
 <li>
-<code>@KeepClass</code>: Annotate a class, interface or enum with this annotation to keep it and its members. You can also modify what exactly is kept from the class by specifying the <code>KeepSetting</code> on the annotation (explained below).</li>
+<code>@KeepClass</code>: Annotate a class, interface or enum with this annotation to keep it.</li>
 <li>
-<code>@KeepMethod</code>: Annotate a method with this annotation to keep it. Only keeps the method, not the class, interface or enum which contains it.</li>
+<code>@KeepMember</code>: Annotate a method or field with this annotation to keep it. Only keeps the annotated member, not the class, interface or enum which contains it.</li>
 <li>
-<code>@KeepField</code>: Annotate a field with this annotation to keep it. Only keeps the method, not the class, interface or enum which contains it.</li>
-<li>
-<code>@KeepName</code>: Annotate a class, interface or enum with this annotation to just keep the name, and not any members. You can still use <code>@KeepField</code> or <code>@KeepMethod</code> to selectively keep members from the class.</li>
+<code>@KeepClassMembers</code>: Annotate a class, interface or enum with this annotation to keep its members. You can also modify what exactly is kept from the class by specifying the <code>KeepSetting</code> on the annotation (explained below).</li>
 <li>
 <code>@DontKeep</code>: Annotate a method or field with this annotation to specifically not keep it.</li>
 </ul>
@@ -60,9 +58,34 @@
 <h2>
 <a id="examples" class="anchor" href="#examples" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Examples</h2>
 
-<p>In most cases the <code>@KeepClass</code> annotation is all you need! By default it will keep the annotated class and all of its members. For example:</p>
+<p>In most cases the <code>@KeepClass</code> and <code>@KeepMember</code> annotations are all you need! For example:</p>
 
 <div class="highlight highlight-source-java"><pre>@<span class="pl-smi">KeepClass</span>
+<span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">ExampleClass</span> {
+
+    <span class="pl-c">// This field is kept</span>
+    <span class="pl-k">@KeepMember</span>
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">int</span> <span class="pl-c1">SOME_ID</span> <span class="pl-k">=</span> 0x01;
+
+    <span class="pl-c">// This method is kept too</span>
+    <span class="pl-k">@KeepMember</span>
+    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">doIt</span>() {
+        <span class="pl-c1">...</span>
+    }
+
+    <span class="pl-c">// This field is not kept</span>
+    <span class="pl-k">private</span> <span class="pl-smi">String</span> mSomeValue;
+
+    <span class="pl-c">// This method is not kept as well</span>
+    <span class="pl-smi">String</span> <span class="pl-k">void</span> <span class="pl-en">doSomethingElse</span>() {
+        <span class="pl-c1">...</span>
+    }
+}</pre></div>
+
+<p>You can use <code>@KeepClassMembers</code> together with <code>@KeepClass</code> to keep all the members of a class:</p>
+
+<div class="highlight highlight-source-java"><pre>@<span class="pl-smi">KeepClass</span>
+@<span class="pl-smi">KeepClassMembers</span>
 <span class="pl-k">public</span> <span class="pl-k">interface</span> <span class="pl-en">ExampleInterface</span> {
     <span class="pl-k">void</span> <span class="pl-en">foo</span>();
     <span class="pl-k">void</span> <span class="pl-en">bar</span>();
@@ -71,22 +94,25 @@
 <p>If you want don't want to keep a specific method you can use <code>@DontKeep</code>:</p>
 
 <div class="highlight highlight-source-java"><pre>@<span class="pl-smi">KeepClass</span>
+@<span class="pl-smi">KeepClassMembers</span>
 <span class="pl-k">public</span> <span class="pl-k">interface</span> <span class="pl-en">ExampleInterface</span> {
+
+    <span class="pl-c">// This method is kept</span>
     <span class="pl-k">void</span> <span class="pl-en">foo</span>();
 
+    <span class="pl-c">// This method is not kept</span>
     <span class="pl-k">@DontKeep</span>
     <span class="pl-k">void</span> <span class="pl-en">bar</span>();
 }</pre></div>
 
-<p>You can use the <code>KeepSetting</code> enum to set what exactly is kept from a class annotated with <code>@KeepClass</code>. A few examples:</p>
+<p>With <code>KeepSetting</code> you specify what exactly is kept by <code>@KeepClassMembers</code>:</p>
 
-<p>Keep only public members and the name of the class:</p>
-
-<div class="highlight highlight-source-java"><pre>@KeepClass(<span class="pl-smi">KeepSetting</span><span class="pl-c1"><span class="pl-k">.</span>PUBLIC_MEMBERS</span>)
+<div class="highlight highlight-source-java"><pre>@<span class="pl-smi">KeepClass</span>
+@KeepClassMembers(<span class="pl-smi">KeepSetting</span><span class="pl-c1"><span class="pl-k">.</span>PUBLIC_MEMBERS</span>)
 <span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">ExampleClass</span> {
 
     <span class="pl-c">// This is kept</span>
-    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">int</span> <span class="pl-c1">SOME_ID</span> <span class="pl-k">=</span> 0x01;
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">final</span> <span class="pl-k">int</span> <span class="pl-c1">SOME_ID</span> <span class="pl-k">=</span> 0x01;
 
     <span class="pl-c">// This is kept as well</span>
     <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">doIt</span>() {
@@ -96,61 +122,30 @@
     <span class="pl-c">// This is not kept</span>
     <span class="pl-k">private</span> <span class="pl-smi">String</span> mSomeValue;
 
-    <span class="pl-c">// This is also not kept</span>
+    <span class="pl-c">// This too is not kept</span>
     <span class="pl-smi">String</span> <span class="pl-k">void</span> <span class="pl-en">doSomethingElse</span>() {
         <span class="pl-c1">...</span>
     }
 }</pre></div>
 
-<p>Keep package local methods and public fields as well as the name of the class.</p>
+<p>Of course you can specify multiple <code>KeepSetting</code> values:</p>
 
-<div class="highlight highlight-source-java"><pre>@KeepClass({<span class="pl-smi">KeepSetting</span><span class="pl-c1"><span class="pl-k">.</span>PACKAGE_LOCAL_METHODS</span>, <span class="pl-smi">KeepSetting</span><span class="pl-c1"><span class="pl-k">.</span>PUBLIC_FIELDS</span>)
+<div class="highlight highlight-source-java"><pre>@<span class="pl-smi">KeepClass</span>
+@KeepClassMembers({<span class="pl-smi">KeepSetting</span><span class="pl-c1"><span class="pl-k">.</span>PUBLIC_MEMBERS</span>, <span class="pl-smi">KeepSetting</span><span class="pl-c1"><span class="pl-k">.</span>PACKAGE_LOCAL_METHODS</span>})
 <span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">ExampleClass</span> {
 
-    <span class="pl-c">// This is kept</span>
-    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">int</span> <span class="pl-c1">SOME_ID</span> <span class="pl-k">=</span> 0x01;
+    <span class="pl-c">// This field is kept</span>
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">final</span> <span class="pl-k">int</span> <span class="pl-c1">SOME_ID</span> <span class="pl-k">=</span> 0x01;
 
-    <span class="pl-c">// This is not kept</span>
+    <span class="pl-c">// This method is kept as well</span>
     <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">doIt</span>() {
         <span class="pl-c1">...</span>
     }
 
-    <span class="pl-c">// This is not kept</span>
+    <span class="pl-c">// This field is not kept</span>
     <span class="pl-k">private</span> <span class="pl-smi">String</span> mSomeValue;
 
-    <span class="pl-c">// This is kept</span>
-    <span class="pl-smi">String</span> <span class="pl-k">void</span> <span class="pl-en">doSomethingElse</span>() {
-        <span class="pl-c1">...</span>
-    }
-}</pre></div>
-
-<p>You can keep specific methods or fields with the <code>@KeepMethod</code> and <code>@KeepField</code> annotations:</p>
-
-<div class="highlight highlight-source-java"><pre>@<span class="pl-smi">KeepField</span>
-<span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">int</span> <span class="pl-c1">SOME_ID</span> <span class="pl-k">=</span> 0x01;
-
-@<span class="pl-smi">KeepMethod</span>
-<span class="pl-k">public</span> <span class="pl-k">void</span> doIt() {
-    <span class="pl-c1">...</span>
-}</pre></div>
-
-<p>But this does not automatically keep the containing class as well! If you want to keep the name of the containing class too you can use the <code>@KeepName</code> annotation:</p>
-
-<div class="highlight highlight-source-java"><pre>@<span class="pl-smi">KeepName</span>
-<span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">ExampleClass</span> {
-
-    <span class="pl-k">@KeepField</span>
-    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">int</span> <span class="pl-c1">SOME_ID</span> <span class="pl-k">=</span> 0x01;
-
-    <span class="pl-k">@KeepMethod</span>
-    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">doIt</span>() {
-        <span class="pl-c1">...</span>
-    }
-
-    <span class="pl-c">// This is not kept</span>
-    <span class="pl-k">private</span> <span class="pl-smi">String</span> mSomeValue;
-
-    <span class="pl-c">// This is also not kept</span>
+    <span class="pl-c">// But this method is kept too</span>
     <span class="pl-smi">String</span> <span class="pl-k">void</span> <span class="pl-en">doSomethingElse</span>() {
         <span class="pl-c1">...</span>
     }
