@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>ProguardAnnotations by Wrdlbrnft</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">ProguardAnnotations</h1>
+      <h2 class="project-tagline"> Makes dealing with Proguard simple and easy!</h2>
+      <a href="https://github.com/Wrdlbrnft/ProguardAnnotations" class="btn">View on GitHub</a>
+      <a href="https://github.com/Wrdlbrnft/ProguardAnnotations/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/Wrdlbrnft/ProguardAnnotations/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <ul>
+<li>
+<strong>Short and concise, but powerful API</strong>: Define your rules with a few simple annotations and ProguardAnnotations takes care of the rest!</li>
+<li>
+<strong>Simplifies development</strong>: You can move classes and refactor your code without worrying about breaking any proguard rules!</li>
+<li>
+<strong>Works with your current setup</strong>: Don't want to migrate your whole project to try out ProguardAnnotations? You don't have to! While using ProguardAnnotations you can still define rules manually or use another Proguard library. No conflicts, no problems.</li>
+</ul>
+
+<h2>
+<a id="how-do-i-add-it-to-my-project" class="anchor" href="#how-do-i-add-it-to-my-project" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>How do I add it to my project?</h2>
+
+<p>To use Proguard Annotations add the following at the very top of your build.gradle file:</p>
+
+<div class="highlight highlight-source-groovy"><pre>plugins {
+    id <span class="pl-s"><span class="pl-pds">"</span>com.github.wrdlbrnft.proguard-annotations<span class="pl-pds">"</span></span> version <span class="pl-s"><span class="pl-pds">"</span>0.2.0.41<span class="pl-pds">"</span></span>
+}</pre></div>
+
+<p>And you are done! Now you can use ProguardAnnotations.</p>
+
+<h2>
+<a id="how-do-i-use-it" class="anchor" href="#how-do-i-use-it" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>How do I use it?</h2>
+
+<p>ProguardAnnotations currently provides five different annotations with which you can define your Proguard rules:</p>
+
+<ul>
+<li>
+<code>@KeepClass</code>: Annotate a class, interface or enum with this annotation to keep it and its members. You can also modify what exactly is kept from the class by specifying the <code>KeepSetting</code> on the annotation (explained below).</li>
+<li>
+<code>@KeepMethod</code>: Annotate a method with this annotation to keep it. Only keeps the method, not the class, interface or enum which contains it.</li>
+<li>
+<code>@KeepField</code>: Annotate a field with this annotation to keep it. Only keeps the method, not the class, interface or enum which contains it.</li>
+<li>
+<code>@KeepName</code>: Annotate a class, interface or enum with this annotation to just keep the name, and not any members. You can still use <code>@KeepField</code> or <code>@KeepMethod</code> to selectively keep members from the class.</li>
+<li>
+<code>@DontKeep</code>: Annotate a method or field with this annotation to specifically not keep it.</li>
+</ul>
+
+<h2>
+<a id="examples" class="anchor" href="#examples" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Examples</h2>
+
+<p>In most cases the <code>@KeepClass</code> annotation is all you need! By default it will keep the annotated class and all of its members. For example:</p>
+
+<div class="highlight highlight-source-java"><pre>@<span class="pl-smi">KeepClass</span>
+<span class="pl-k">public</span> <span class="pl-k">interface</span> <span class="pl-en">ExampleInterface</span> {
+    <span class="pl-k">void</span> <span class="pl-en">foo</span>();
+    <span class="pl-k">void</span> <span class="pl-en">bar</span>();
+}</pre></div>
+
+<p>If you want don't want to keep a specific method you can use <code>@DontKeep</code>:</p>
+
+<div class="highlight highlight-source-java"><pre>@<span class="pl-smi">KeepClass</span>
+<span class="pl-k">public</span> <span class="pl-k">interface</span> <span class="pl-en">ExampleInterface</span> {
+    <span class="pl-k">void</span> <span class="pl-en">foo</span>();
+
+    <span class="pl-k">@DontKeep</span>
+    <span class="pl-k">void</span> <span class="pl-en">bar</span>();
+}</pre></div>
+
+<p>You can use the <code>KeepSetting</code> enum to set what exactly is kept from a class annotated with <code>@KeepClass</code>. A few examples:</p>
+
+<p>Keep only public members and the name of the class:</p>
+
+<div class="highlight highlight-source-java"><pre>@KeepClass(<span class="pl-smi">KeepSetting</span><span class="pl-c1"><span class="pl-k">.</span>PUBLIC_MEMBERS</span>)
+<span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">ExampleClass</span> {
+
+    <span class="pl-c">// This is kept</span>
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">int</span> <span class="pl-c1">SOME_ID</span> <span class="pl-k">=</span> 0x01;
+
+    <span class="pl-c">// This is kept as well</span>
+    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">doIt</span>() {
+        <span class="pl-c1">...</span>
+    }
+
+    <span class="pl-c">// This is not kept</span>
+    <span class="pl-k">private</span> <span class="pl-smi">String</span> mSomeValue;
+
+    <span class="pl-c">// This is also not kept</span>
+    <span class="pl-smi">String</span> <span class="pl-k">void</span> <span class="pl-en">doSomethingElse</span>() {
+        <span class="pl-c1">...</span>
+    }
+}</pre></div>
+
+<p>Keep package local methods and public fields as well as the name of the class.</p>
+
+<div class="highlight highlight-source-java"><pre>@KeepClass({<span class="pl-smi">KeepSetting</span><span class="pl-c1"><span class="pl-k">.</span>PACKAGE_LOCAL_METHODS</span>, <span class="pl-smi">KeepSetting</span><span class="pl-c1"><span class="pl-k">.</span>PUBLIC_FIELDS</span>)
+<span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">ExampleClass</span> {
+
+    <span class="pl-c">// This is kept</span>
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">int</span> <span class="pl-c1">SOME_ID</span> <span class="pl-k">=</span> 0x01;
+
+    <span class="pl-c">// This is not kept</span>
+    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">doIt</span>() {
+        <span class="pl-c1">...</span>
+    }
+
+    <span class="pl-c">// This is not kept</span>
+    <span class="pl-k">private</span> <span class="pl-smi">String</span> mSomeValue;
+
+    <span class="pl-c">// This is kept</span>
+    <span class="pl-smi">String</span> <span class="pl-k">void</span> <span class="pl-en">doSomethingElse</span>() {
+        <span class="pl-c1">...</span>
+    }
+}</pre></div>
+
+<p>You can keep specific methods or fields with the <code>@KeepMethod</code> and <code>@KeepField</code> annotations:</p>
+
+<div class="highlight highlight-source-java"><pre>@<span class="pl-smi">KeepField</span>
+<span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">int</span> <span class="pl-c1">SOME_ID</span> <span class="pl-k">=</span> 0x01;
+
+@<span class="pl-smi">KeepMethod</span>
+<span class="pl-k">public</span> <span class="pl-k">void</span> doIt() {
+    <span class="pl-c1">...</span>
+}</pre></div>
+
+<p>But this does not automatically keep the containing class as well! If you want to keep the name of the containing class too you can use the <code>@KeepName</code> annotation:</p>
+
+<div class="highlight highlight-source-java"><pre>@<span class="pl-smi">KeepName</span>
+<span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">ExampleClass</span> {
+
+    <span class="pl-k">@KeepField</span>
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">int</span> <span class="pl-c1">SOME_ID</span> <span class="pl-k">=</span> 0x01;
+
+    <span class="pl-k">@KeepMethod</span>
+    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">doIt</span>() {
+        <span class="pl-c1">...</span>
+    }
+
+    <span class="pl-c">// This is not kept</span>
+    <span class="pl-k">private</span> <span class="pl-smi">String</span> mSomeValue;
+
+    <span class="pl-c">// This is also not kept</span>
+    <span class="pl-smi">String</span> <span class="pl-k">void</span> <span class="pl-en">doSomethingElse</span>() {
+        <span class="pl-c1">...</span>
+    }
+}</pre></div>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/Wrdlbrnft/ProguardAnnotations">ProguardAnnotations</a> is maintained by <a href="https://github.com/Wrdlbrnft">Wrdlbrnft</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
