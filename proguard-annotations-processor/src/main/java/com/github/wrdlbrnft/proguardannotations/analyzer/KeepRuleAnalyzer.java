@@ -115,6 +115,7 @@ public class KeepRuleAnalyzer {
                         || member.getKind() == ElementKind.INTERFACE
                         || member.getKind() == ElementKind.ANNOTATION_TYPE)
                 .filter(member -> evaluators.stream().anyMatch(evaluator -> evaluator.shouldKeep(member)))
+                .flatMap(member -> Stream.concat(Stream.of(member), findKeptInnerClasses(member)))
                 .map(TypeElement.class::cast);
     }
 
