@@ -3,8 +3,15 @@ package com.github.wrdlbrnft.proguardannotations.keeprules;
 import com.github.wrdlbrnft.proguardannotations.Utils;
 import com.github.wrdlbrnft.proguardannotations.includestatements.IncludeStatement;
 
+import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -12,14 +19,23 @@ import java.util.stream.Collectors;
  */
 class KeepRuleImpl implements KeepRule {
 
-    private final String mProguardRule;
+    private final Type mType;
+    private final TypeElement mElement;
+    private final List<IncludeStatement> mIncludeStatement;
 
     KeepRuleImpl(Type type, TypeElement element, List<IncludeStatement> includeStatement) {
-        mProguardRule = includeStatement.stream()
-                .map(IncludeStatement::toString)
+        mType = type;
+        mElement = element;
+        mIncludeStatement = includeStatement;
+    }
+
+    @Override
+    public String toProguardKeepRule(ProcessingEnvironment processingEnv) {
+        return mIncludeStatement.stream()
+                .map(statement -> statement.toProguardKeepStatement(processingEnv))
                 .collect(Collectors.joining(
                         "\n\t",
-                        getKeepInstructionForType(type) + " " + Utils.formatType(element) + " {\n\t",
+                        getKeepInstructionForType(mType) + " " + formatType(processingEnv, mElement) + " {\n\t",
                         "\n}"
                 ));
     }
@@ -27,7 +43,7 @@ class KeepRuleImpl implements KeepRule {
     private static String getKeepInstructionForType(Type type) {
         switch (type) {
 
-            case KEEP_ALL:
+            case KEEP_NAME_AND_MEMBERS:
                 return "-keep";
 
             case KEEP_MEMBERS:
@@ -38,8 +54,44 @@ class KeepRuleImpl implements KeepRule {
         }
     }
 
-    @Override
-    public String toString() {
-        return mProguardRule;
+    private static String formatType(ProcessingEnvironment processingEnv, TypeElement element) {
+        return formatElementModifiers(element)
+                + " " + getNameOfKind(element)
+                + " " + Utils.getProguardClassName(element);
+    }
+
+    private static String formatElementModifiers(Element element) {
+        final Set<Modifier> blacklist = new HashSet<>();
+        blacklist.add(Modifier.STATIC);
+
+        return element.getModifiers().stream()
+                .filter(Utils.not(blacklist::contains))
+                .map(Modifier::name)
+                .map(String::toLowerCase)
+                .collect(Collectors.joining(" "));
+    }
+
+    private static String getNameOfKind(TypeElement typeElement) {
+        final ElementKind kind = typeElement.getKind();
+        switch (kind) {
+
+            case PACKAGE:
+                return "package";
+
+            case ENUM:
+                return "enum";
+
+            case CLASS:
+                return "class";
+
+            case ANNOTATION_TYPE:
+                return "@interface";
+
+            case INTERFACE:
+                return "interface";
+
+            default:
+                return kind.name().toLowerCase();
+        }
     }
 }

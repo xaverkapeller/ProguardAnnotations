@@ -34,7 +34,7 @@ public class ProguardAnnotationsProcessor extends AbstractProcessor {
         try {
             try (final Writer writer = openOutputFile()) {
                 writer.append(mKeepRuleAnalyzer.analyze(roundEnv)
-                        .map(KeepRule::toString)
+                        .map(rule -> rule.toProguardKeepRule(processingEnv))
                         .collect(Collectors.joining("\n"))
                 );
             }

@@ -2,6 +2,7 @@ package com.github.wrdlbrnft.proguardannotations.keeprules;
 
 import com.github.wrdlbrnft.proguardannotations.includestatements.IncludeStatement;
 
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.TypeElement;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,9 +13,11 @@ import java.util.List;
 public interface KeepRule {
 
     enum Type {
-        KEEP_ALL,
+        KEEP_NAME_AND_MEMBERS,
         KEEP_MEMBERS
     }
+
+    String toProguardKeepRule(ProcessingEnvironment processingEnv);
 
     class Builder {
 

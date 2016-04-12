@@ -1,11 +1,19 @@
 package com.github.wrdlbrnft.proguardannotations;
 
-import javax.lang.model.element.*;
-import javax.lang.model.type.TypeMirror;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
+import javax.lang.model.element.PackageElement;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Created by Xaver on 09/04/16.
@@ -16,60 +24,7 @@ public class Utils {
         return predicate.negate();
     }
 
-    public static String formatType(TypeElement element) {
-        return formatElementModifiers(element)
-                + " " + getNameOfKind(element)
-                + " " + getProguardClassName(element);
-    }
-
-    public static String formatMember(Element member) {
-        return formatMemberModifiers(member) + " " + formatMemberType(member) + " " + formatMemberName(member) + ";";
-    }
-
-    private static String formatMemberName(Element member) {
-        if (member instanceof ExecutableElement) {
-            final ExecutableElement method = (ExecutableElement) member;
-            return formatMethodSignature(method);
-        }
-
-        return member.getSimpleName().toString();
-    }
-
-    private static String formatMethodSignature(ExecutableElement method) {
-        return method.getSimpleName() + method.getParameters().stream()
-                .map(VariableElement::asType)
-                .map(TypeMirror::toString)
-                .collect(Collectors.joining(", ", "(", ")"));
-    }
-
-    private static String formatMemberType(Element member) {
-        if (member instanceof ExecutableElement) {
-            final ExecutableElement method = (ExecutableElement) member;
-            return method.getReturnType().toString();
-        }
-
-        return member.asType().toString();
-    }
-
-    private static String formatMemberModifiers(Element element) {
-        return element.getModifiers().stream()
-                .map(Modifier::name)
-                .map(String::toLowerCase)
-                .collect(Collectors.joining(" "));
-    }
-
-    private static String formatElementModifiers(Element element) {
-        final Set<Modifier> blacklist = new HashSet<>();
-        blacklist.add(Modifier.STATIC);
-
-        return element.getModifiers().stream()
-                .filter(not(blacklist::contains))
-                .map(Modifier::name)
-                .map(String::toLowerCase)
-                .collect(Collectors.joining(" "));
-    }
-
-    private static String getProguardClassName(TypeElement element) {
+    public static String getProguardClassName(TypeElement element) {
         Element enclosingElement = element.getEnclosingElement();
         String className = element.getSimpleName().toString();
         while (enclosingElement.getKind() != ElementKind.PACKAGE) {
@@ -82,27 +37,8 @@ public class Utils {
         return packageName + "." + className;
     }
 
-    private static String getNameOfKind(TypeElement typeElement) {
-        final ElementKind kind = typeElement.getKind();
-        switch (kind) {
-
-            case PACKAGE:
-                return "package";
-
-            case ENUM:
-                return "enum";
-
-            case CLASS:
-                return "class";
-
-            case ANNOTATION_TYPE:
-                return "@interface";
-
-            case INTERFACE:
-                return "interface";
-
-            default:
-                return kind.name().toLowerCase();
-        }
+    public static String getProguardClassName(ProcessingEnvironment processingEnv, TypeMirror mirror) {
+        final TypeElement element = (TypeElement) processingEnv.getTypeUtils().asElement(mirror);
+        return getProguardClassName(element);
     }
 }

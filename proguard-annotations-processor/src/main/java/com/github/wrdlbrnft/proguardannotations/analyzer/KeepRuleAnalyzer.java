@@ -34,7 +34,7 @@ public class KeepRuleAnalyzer {
                 .filter(TypeElement.class::isInstance)
                 .map(TypeElement.class::cast)
                 .distinct();
-
+        
         final Stream<TypeElement> keptClassMembersTypes = roundEnv.getElementsAnnotatedWith(KeepClassMembers.class).stream()
                 .map(TypeElement.class::cast);
 
@@ -77,19 +77,19 @@ public class KeepRuleAnalyzer {
     private KeepRule.Type determineKeepRuleType(TypeElement element) {
         final KeepClass keepClassAnnotation = element.getAnnotation(KeepClass.class);
         if(keepClassAnnotation != null) {
-            return KeepRule.Type.KEEP_ALL;
+            return KeepRule.Type.KEEP_NAME_AND_MEMBERS;
         }
 
         if(element.getEnclosingElement() instanceof TypeElement) {
             final TypeElement enclosingType = (TypeElement) element.getEnclosingElement();
             final KeepClassMembers annotation = enclosingType.getAnnotation(KeepClassMembers.class);
             if(annotation == null) {
-                return KeepRule.Type.KEEP_ALL;
+                return KeepRule.Type.KEEP_NAME_AND_MEMBERS;
             }
             
             final Collection<KeepSetting> settings = Arrays.asList(annotation.value());
             if(settings.contains(KeepSetting.ALL)) {
-                return KeepRule.Type.KEEP_ALL;
+                return KeepRule.Type.KEEP_NAME_AND_MEMBERS;
             }
 
             final Set<Modifier> modifiers = element.getModifiers();
@@ -97,7 +97,7 @@ public class KeepRuleAnalyzer {
                     || modifiers.contains(Modifier.PROTECTED) && settings.contains(KeepSetting.PROTECTED_INNER_CLASSES)
                     || modifiers.contains(Modifier.DEFAULT) && settings.contains(KeepSetting.PACKAGE_LOCAL_INNER_CLASSES)
                     || modifiers.contains(Modifier.PRIVATE) && settings.contains(KeepSetting.PRIVATE_INNER_CLASSES)) {
-                return KeepRule.Type.KEEP_ALL;
+                return KeepRule.Type.KEEP_NAME_AND_MEMBERS;
             }
         }
 
