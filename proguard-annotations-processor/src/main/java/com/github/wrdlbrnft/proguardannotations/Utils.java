@@ -39,6 +39,10 @@ public class Utils {
 
     public static String getProguardClassName(ProcessingEnvironment processingEnv, TypeMirror mirror) {
         final TypeElement element = (TypeElement) processingEnv.getTypeUtils().asElement(mirror);
+        if(element == null) {
+            return mirror.toString();
+        }
+        
         return getProguardClassName(element);
     }
 }
