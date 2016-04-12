@@ -116,8 +116,7 @@ public class KeepRuleAnalyzer {
                         || member.getKind() == ElementKind.ANNOTATION_TYPE)
                 .filter(member -> evaluators.stream().anyMatch(evaluator -> evaluator.shouldKeep(member)))
                 .map(TypeElement.class::cast)
-                .flatMap(member -> Stream.concat(Stream.of(member), findKeptInnerClasses(member)))
-                .map(TypeElement.class::cast);
+                .flatMap(member -> Stream.concat(Stream.of(member), findKeptInnerClasses(member)));
     }
 
     private Collection<KeepSettingEvaluator> getEvaluatorsForInnerClasses(Collection<KeepSetting> settings) {
