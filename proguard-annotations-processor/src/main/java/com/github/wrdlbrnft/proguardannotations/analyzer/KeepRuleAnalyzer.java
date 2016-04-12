@@ -83,8 +83,11 @@ public class KeepRuleAnalyzer {
         if(element.getEnclosingElement() instanceof TypeElement) {
             final TypeElement enclosingType = (TypeElement) element.getEnclosingElement();
             final KeepClassMembers annotation = enclosingType.getAnnotation(KeepClassMembers.class);
+            if(annotation == null) {
+                return KeepRule.Type.KEEP_ALL;
+            }
+            
             final Collection<KeepSetting> settings = Arrays.asList(annotation.value());
-
             if(settings.contains(KeepSetting.ALL)) {
                 return KeepRule.Type.KEEP_ALL;
             }
