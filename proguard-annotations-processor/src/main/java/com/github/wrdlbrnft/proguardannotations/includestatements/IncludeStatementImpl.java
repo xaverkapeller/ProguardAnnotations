@@ -9,7 +9,6 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.TypeMirror;
 
 /**
  * Created by Xaver on 09/04/16.
@@ -26,22 +25,22 @@ class IncludeStatementImpl implements IncludeStatement {
     public String toProguardKeepStatement(ProcessingEnvironment processingEnv) {
         return formatMemberModifiers(mElement) + " "
                 + formatMemberType(processingEnv, mElement) + " "
-                + formatMemberName(mElement) + ";";
+                + formatMemberName(processingEnv, mElement) + ";";
     }
 
-    private static String formatMemberName(Element member) {
+    private static String formatMemberName(ProcessingEnvironment processingEnv, Element member) {
         if (member instanceof ExecutableElement) {
             final ExecutableElement method = (ExecutableElement) member;
-            return formatMethodSignature(method);
+            return formatMethodSignature(processingEnv, method);
         }
 
         return member.getSimpleName().toString();
     }
 
-    private static String formatMethodSignature(ExecutableElement method) {
+    private static String formatMethodSignature(ProcessingEnvironment processingEnv, ExecutableElement method) {
         return method.getSimpleName() + method.getParameters().stream()
                 .map(VariableElement::asType)
-                .map(TypeMirror::toString)
+                .map(mirror -> Utils.getProguardClassName(processingEnv, mirror))
                 .collect(Collectors.joining(", ", "(", ")"));
     }
 
