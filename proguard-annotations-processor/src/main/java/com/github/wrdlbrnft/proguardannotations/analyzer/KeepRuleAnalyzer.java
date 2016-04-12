@@ -60,6 +60,10 @@ public class KeepRuleAnalyzer {
 
         return element.getEnclosedElements().stream()
                 .filter(Utils.not(this::hasDontKeepAnnotation))
+                .filter(member -> member.getKind() != ElementKind.CLASS)
+                .filter(member -> member.getKind() != ElementKind.INTERFACE)
+                .filter(member -> member.getKind() != ElementKind.ANNOTATION_TYPE)
+                .filter(member -> member.getKind() != ElementKind.ENUM)
                 .filter(member -> hasKeepAnnotation(member) || settings.stream()
                         .map(KeepSettingEvaluator::of)
                         .anyMatch(evaluator -> evaluator.shouldKeep(member)))
