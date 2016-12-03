@@ -1,17 +1,21 @@
 buildscript {
     repositories {
         maven {
-            url "https://plugins.gradle.org/m2/"
+            url 'https://plugins.gradle.org/m2/'
         }
         jcenter()
     }
     dependencies {
-        classpath "com.gradle.publish:plugin-publish-plugin:0.9.4"
-        classpath 'com.novoda:bintray-release:0.3.4'
+        classpath 'com.gradle.publish:plugin-publish-plugin:0.9.6'
+        classpath 'com.novoda:bintray-release:0.4.0'
     }
 }
 
-apply plugin: "com.gradle.plugin-publish"
+plugins {
+    id 'de.fuerstenau.buildconfig' version '1.1.7'
+}
+
+apply plugin: 'com.gradle.plugin-publish'
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'maven-publish'
 apply plugin: 'maven'
@@ -24,7 +28,7 @@ dependencies {
 
 final bintrayUser = hasProperty('bintray_user') ? property('bintray_user') : ''
 final bintrayApiKey = hasProperty('bintray_api_key') ? property('bintray_api_key') : ''
-final versionName = hasProperty('version_name') ? property('version_name') : ''
+final versionName = hasProperty('version_name') ? property('version_name') : '0.1.0.0'
 
 version = versionName
 
@@ -40,6 +44,10 @@ pluginBundle {
             tags = ['android', 'proguard', 'plugin']
         }
     }
+}
+
+buildConfig {
+    packageName = 'com.github.wrdlbrnft.proguardannotations'
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {

@@ -24,9 +24,11 @@ class ProguardAnnotationsPlugin implements Plugin<Project> {
                 type.proguardFiles new File(project.buildDir, GENERATED_RULE_FILE_NAME)
             }
 
+            final apiDependency = 'com.github.wrdlbrnft:proguard-annotations-api:' + BuildConfig.VERSION
+            final processorDependency = 'com.github.wrdlbrnft:proguard-annotations-processor:' + BuildConfig.VERSION
             project.dependencies {
-                provided 'com.github.wrdlbrnft:proguard-annotations-api:0.2.0.51'
-                provided 'com.github.wrdlbrnft:proguard-annotations-processor:0.2.0.51'
+                provided apiDependency
+                provided processorDependency
             }
         }
     }

@@ -1,19 +1,12 @@
 package com.github.wrdlbrnft.proguardannotations;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.Modifier;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
+import java.util.function.Predicate;
 
 /**
  * Created by Xaver on 09/04/16.
@@ -38,11 +31,11 @@ public class Utils {
     }
 
     public static String getProguardClassName(ProcessingEnvironment processingEnv, TypeMirror mirror) {
-        final TypeElement element = (TypeElement) processingEnv.getTypeUtils().asElement(mirror);
-        if(element == null) {
-            return mirror.toString();
+        final Element element = processingEnv.getTypeUtils().asElement(mirror);
+        if (element instanceof TypeElement) {
+            final TypeElement typeElement = (TypeElement) element;
+            return getProguardClassName(typeElement);
         }
-        
-        return getProguardClassName(element);
+        return mirror.toString();
     }
 }
