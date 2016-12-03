@@ -1,8 +1,14 @@
 package com.github.wrdlbrnft.proguardannotations;
 
-import com.github.wrdlbrnft.proguardannotations.keeprules.KeepRule;
 import com.github.wrdlbrnft.proguardannotations.analyzer.KeepRuleAnalyzer;
 
+import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.RoundEnvironment;
+import javax.annotation.processing.SupportedSourceVersion;
+import javax.lang.model.SourceVersion;
+import javax.lang.model.element.TypeElement;
+import javax.tools.Diagnostic;
+import javax.tools.StandardLocation;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.HashSet;
@@ -10,12 +16,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-
-import javax.annotation.processing.*;
-import javax.lang.model.SourceVersion;
-import javax.lang.model.element.TypeElement;
-import javax.tools.Diagnostic;
-import javax.tools.StandardLocation;
 
 /**
  * Created by kapeller on 07/03/16.

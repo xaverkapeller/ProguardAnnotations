@@ -29,12 +29,12 @@ public class KeepRuleAnalyzer {
                 .map(TypeElement.class::cast);
 
         final Stream<TypeElement> keptMemberTypes = roundEnv.getElementsAnnotatedWith(KeepMember.class).stream()
-                .filter(Utils.not(this::hasDontKeepAnnotation))
+                .filter(element -> !hasDontKeepAnnotation(element))
                 .map(Element::getEnclosingElement)
                 .filter(TypeElement.class::isInstance)
                 .map(TypeElement.class::cast)
                 .distinct();
-        
+
         final Stream<TypeElement> keptClassMembersTypes = roundEnv.getElementsAnnotatedWith(KeepClassMembers.class).stream()
                 .map(TypeElement.class::cast);
 
@@ -59,7 +59,7 @@ public class KeepRuleAnalyzer {
         final KeepRule.Type keepRuleType = determineKeepRuleType(element);
 
         return element.getEnclosedElements().stream()
-                .filter(Utils.not(this::hasDontKeepAnnotation))
+                .filter(member -> !hasDontKeepAnnotation(member))
                 .filter(member -> member.getKind() != ElementKind.CLASS)
                 .filter(member -> member.getKind() != ElementKind.INTERFACE)
                 .filter(member -> member.getKind() != ElementKind.ANNOTATION_TYPE)
@@ -76,24 +76,24 @@ public class KeepRuleAnalyzer {
 
     private KeepRule.Type determineKeepRuleType(TypeElement element) {
         final KeepClass keepClassAnnotation = element.getAnnotation(KeepClass.class);
-        if(keepClassAnnotation != null) {
+        if (keepClassAnnotation != null) {
             return KeepRule.Type.KEEP_NAME_AND_MEMBERS;
         }
 
-        if(element.getEnclosingElement() instanceof TypeElement) {
+        if (element.getEnclosingElement() instanceof TypeElement) {
             final TypeElement enclosingType = (TypeElement) element.getEnclosingElement();
             final KeepClassMembers annotation = enclosingType.getAnnotation(KeepClassMembers.class);
-            if(annotation == null) {
+            if (annotation == null) {
                 return KeepRule.Type.KEEP_NAME_AND_MEMBERS;
             }
-            
+
             final Collection<KeepSetting> settings = Arrays.asList(annotation.value());
-            if(settings.contains(KeepSetting.ALL)) {
+            if (settings.contains(KeepSetting.ALL)) {
                 return KeepRule.Type.KEEP_NAME_AND_MEMBERS;
             }
 
             final Set<Modifier> modifiers = element.getModifiers();
-            if(modifiers.contains(Modifier.PUBLIC) && settings.contains(KeepSetting.PUBLIC_INNER_CLASSES)
+            if (modifiers.contains(Modifier.PUBLIC) && settings.contains(KeepSetting.PUBLIC_INNER_CLASSES)
                     || modifiers.contains(Modifier.PROTECTED) && settings.contains(KeepSetting.PROTECTED_INNER_CLASSES)
                     || modifiers.contains(Modifier.DEFAULT) && settings.contains(KeepSetting.PACKAGE_LOCAL_INNER_CLASSES)
                     || modifiers.contains(Modifier.PRIVATE) && settings.contains(KeepSetting.PRIVATE_INNER_CLASSES)) {
