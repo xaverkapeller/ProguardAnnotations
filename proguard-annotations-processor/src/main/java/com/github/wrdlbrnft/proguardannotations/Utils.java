@@ -6,6 +6,7 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.type.TypeKind;
 import java.util.function.Predicate;
 
 /**
@@ -31,6 +32,11 @@ public class Utils {
     }
 
     public static String getProguardClassName(ProcessingEnvironment processingEnv, TypeMirror mirror) {
+        final TypeKind kind = mirror.getKind();
+        if(kind == TypeKind.TYPEVAR) {
+            return "***";
+        }
+        
         final Element element = processingEnv.getTypeUtils().asElement(mirror);
         if (element instanceof TypeElement) {
             final TypeElement typeElement = (TypeElement) element;
