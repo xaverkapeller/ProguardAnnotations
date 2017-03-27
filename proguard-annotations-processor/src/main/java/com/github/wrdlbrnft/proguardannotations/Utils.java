@@ -10,7 +10,6 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 /**
  * Created by Xaver on 09/04/16.
@@ -59,19 +58,13 @@ public class Utils {
         if (mirror instanceof DeclaredType) {
             final DeclaredType declaredType = (DeclaredType) mirror;
 
-            final String resolveTypeParameters = declaredType.getTypeArguments().isEmpty()
-                    ? ""
-                    : declaredType.getTypeArguments().stream()
-                    .map(argument -> getProguardClassName(processingEnv, argument))
-                    .collect(Collectors.joining(", ", "<", ">"));
-
             final TypeMirror erasedType = processingEnv.getTypeUtils().erasure(declaredType);
             final Element element = processingEnv.getTypeUtils().asElement(erasedType);
             if (element instanceof TypeElement) {
                 final TypeElement typeElement = (TypeElement) element;
-                return getProguardClassName(typeElement) + resolveTypeParameters;
+                return getProguardClassName(typeElement);
             }
-            return erasedType.toString() + resolveTypeParameters;
+            return erasedType.toString();
         }
 
         final Element element = processingEnv.getTypeUtils().asElement(mirror);
