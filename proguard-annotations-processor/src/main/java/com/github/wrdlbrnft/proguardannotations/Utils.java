@@ -36,8 +36,6 @@ public class Utils {
     public static String getProguardClassName(ProcessingEnvironment processingEnv, TypeMirror mirror) {
         final TypeKind kind = mirror.getKind();
 
-        System.out.println(mirror.toString() + " -> " + kind);
-
         if (kind == TypeKind.TYPEVAR) {
             return "**";
         }
