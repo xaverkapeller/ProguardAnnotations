@@ -49,7 +49,7 @@ public class Utils {
             final String resolveTypeParameters = declaredType.getTypeArguments().isEmpty()
                     ? ""
                     : declaredType.getTypeArguments().stream()
-                    .map(argument -> getProguardClassName(processingEnv, mirror))
+                    .map(argument -> getProguardClassName(processingEnv, argument))
                     .collect(Collectors.joining(", ", "<", ">"));
 
             final TypeMirror erasedType = processingEnv.getTypeUtils().erasure(declaredType);
