@@ -43,6 +43,10 @@ public class Utils {
             return "**";
         }
 
+        if (kind == TypeKind.INTERSECTION) {
+            return "**";
+        }
+
         if (mirror instanceof DeclaredType) {
             final DeclaredType declaredType = (DeclaredType) mirror;
 
