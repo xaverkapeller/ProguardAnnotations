@@ -1,0 +1,8 @@
+title: ProguardAnnotations
+description: " Makes dealing with Proguard simple and easy!"
+google_analytics: 
+show_downloads: true
+theme: jekyll-theme-cayman
+
+gems:
+  - jekyll-mentions
