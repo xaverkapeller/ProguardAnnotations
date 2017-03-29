@@ -12,7 +12,7 @@ To use Proguard Annotations add the following at the very top of your build.grad
 
 ```groovy
 plugins {
-    id "com.github.wrdlbrnft.proguard-annotations" version "0.3.0.3"
+    id 'com.github.wrdlbrnft.proguard-annotations' version '0.3.0.11'
 }
 ```
 
