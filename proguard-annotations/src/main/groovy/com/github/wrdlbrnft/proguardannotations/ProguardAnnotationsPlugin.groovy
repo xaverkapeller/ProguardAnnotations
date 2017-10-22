@@ -27,8 +27,8 @@ class ProguardAnnotationsPlugin implements Plugin<Project> {
             final apiDependency = 'com.github.wrdlbrnft:proguard-annotations-api:' + BuildConfig.VERSION
             final processorDependency = 'com.github.wrdlbrnft:proguard-annotations-processor:' + BuildConfig.VERSION
             project.dependencies {
-                provided apiDependency
-                provided processorDependency
+                compileOnly apiDependency
+                annotationProcessor processorDependency
             }
         }
     }
